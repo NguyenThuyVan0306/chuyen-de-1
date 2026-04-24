@@ -1,0 +1,78 @@
+🗃️ DANH SÁCH BẢNG DỮ LIỆU (FINAL)
+👥 1. Bảng users (Người dùng)
+Tên cột	            Kiểu dữ liệu	Mô tả
+id	            BIGINT	        Khóa chính
+name	            VARCHAR	        Tên người dùng
+email	            VARCHAR	        Email (duy nhất)
+password	    VARCHAR	        Mật khẩu
+role	            ENUM	        admin / leader / member
+status	            ENUM	        active / blocked
+created_at	    TIMESTAMP	        Ngày tạo
+updated_at	    TIMESTAMP	        Ngày cập nhật
+🏫 2. Bảng clubs (Câu lạc bộ)
+Tên cột	           Kiểu dữ liệu	        Mô tả
+id	           BIGINT	        Khóa chính
+user_id            BIGINT               FK → users (Chủ nhiệm/Leader)
+name	           VARCHAR	        Tên CLB
+description	   TEXT	                Mô tả
+contact_email	   VARCHAR	        Email liên hệ
+contact_phone  	   VARCHAR	        SĐT
+status             ENUM                 pending / approved / rejected
+created_at	   TIMESTAMP	        Ngày tạo
+updated_at	   TIMESTAMP	        Ngày cập nhật
+📅 3. Bảng club_schedules (Lịch hoạt động)
+Tên cột	           Kiểu dữ liệu	Mô tả
+id	           BIGINT	Khóa chính
+club_id   	   BIGINT	FK → clubs
+title	           VARCHAR	Tên hoạt động
+date	           DATE	Ngày
+location	   VARCHAR	Địa điểm
+created_at	   TIMESTAMP	Ngày tạo
+updated_at	   TIMESTAMP	Ngày cập nhật
+📅 4. Bảng events (Sự kiện)
+Tên cột	Kiểu dữ liệu	Mô tả
+id	BIGINT	Khóa chính
+club_id	BIGINT	FK → clubs
+title	VARCHAR	Tên sự kiện
+description	TEXT	Mô tả
+start_time	DATETIME	Bắt đầu
+end_time	DATETIME	Kết thúc
+location	VARCHAR	Địa điểm
+max_participants	INT	Số lượng tối đa
+status	ENUM	upcoming / ongoing / finished
+created_at	TIMESTAMP	Ngày tạo
+updated_at	TIMESTAMP	Ngày cập nhật
+👤 5. Bảng event_user (Phụ trách sự kiện)
+Tên cột	Kiểu dữ liệu	Mô tả
+id	BIGINT	Khóa chính
+event_id	BIGINT	FK → events
+user_id	BIGINT	FK → users
+role	ENUM	leader / supporter
+created_at	TIMESTAMP	Ngày tạo
+updated_at	TIMESTAMP	Ngày cập nhật
+📝 6. Bảng registrations (Đăng ký)
+Tên cột	           Kiểu dữ liệu	      Mô tả
+id	           BIGINT	      Khóa chính
+user_id	           BIGINT	      FK → users
+event_id	   BIGINT	      FK → events
+status	           ENUM	              pending / approved / rejected
+reason	           TEXT	              Lý do từ chối
+registered_at	   TIMESTAMP	      Thời gian đăng ký
+created_at	   TIMESTAMP	      Ngày tạo
+updated_at	   TIMESTAMP	      Ngày cập nhật
+✅ 7. Bảng checkins (Điểm danh)
+Tên cột	             Kiểu dữ liệu	Mô tả
+id	             BIGINT	        Khóa chính
+registration_id	     BIGINT	        FK → registrations
+checked_in_at	     TIMESTAMP	        Thời gian check-in
+status	             ENUM	        present / absent / excused
+note	             TEXT	        Ghi chú
+created_at	     TIMESTAMP	        Ngày tạo
+updated_at	     TIMESTAMP	        Ngày cập nhật
+🔗 QUAN HỆ GIỮA CÁC BẢNG (ĐỂ VẼ ERD)
+users 1 → n registrations
+events 1 → n registrations
+registrations 1 → 1 checkins
+clubs 1 → n events
+clubs 1 → n club_schedules
+users n ↔ n events (qua event_user)s
