@@ -33,12 +33,18 @@
                 </div>
 
                 <div style="padding: 1.5rem;">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
                         <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800; color: #1e293b;">{{ $club->name }}</h3>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+                        <div style="width: 24px; height: 24px; border-radius: 50%; background: #e0e7ff; color: #6366f1; display:flex; align-items:center; justify-content:center; font-size: 0.7rem; font-weight: 700;">
+                            {{ Str::upper(Str::substr($club->leader->name ?? 'A', 0, 1)) }}
+                        </div>
+                        <span style="font-size: 0.85rem; color: #64748b; font-weight: 600;">Chủ nhiệm: {{ $club->leader->name ?? 'Admin' }}</span>
                     </div>
                     
                     <p style="font-size: 0.9rem; color: #64748b; line-height: 1.6; margin-bottom: 1.5rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; height: 4.8rem;">
-                        {{ $club->description }}
+                        <strong style="color: #475569;">Mô tả:</strong> {{ $club->description }}
                     </p>
 
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; padding: 1rem; background: #f8fafc; border-radius: 14px;">
@@ -91,6 +97,11 @@
                 <h3 style="color: #64748b; font-weight: 600;">Hiện chưa có câu lạc bộ nào khả dụng.</h3>
             </div>
         @endforelse
+    </div>
+
+    <!-- Pagination Links -->
+    <div style="margin-top: 3rem; display: flex; justify-content: center;">
+        {{ $clubs->links() }}
     </div>
 
     <!-- MODAL REGISTRATION -->

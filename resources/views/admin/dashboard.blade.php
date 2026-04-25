@@ -1,13 +1,18 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="page-header" style="margin-bottom: 2rem;">
-        <h2 style="font-weight: 700; color: #1e293b; margin-bottom: 0.5rem;">QUẢN TRỊ HỆ THỐNG</h2>
-        <p style="color: #64748b;">Chào mừng quay trở lại, Admin! Dưới đây là báo cáo tổng quan về toàn bộ hệ thống Câu lạc bộ và Thành viên.</p>
+    <div class="page-header" style="margin-bottom: 2.5rem; display: flex; justify-content: space-between; align-items: flex-end;">
+        <div>
+            <h2 style="font-weight: 800; color: #1e1b4b; margin: 0; font-size: 2rem; letter-spacing: -1px;">QUẢN TRỊ HỆ THỐNG</h2>
+            <p style="color: #64748b; margin-top: 0.5rem; font-size: 1.1rem;">Báo cáo tổng quan về hoạt động của toàn bộ hệ thống.</p>
+        </div>
+        <div style="background: white; padding: 0.75rem 1.25rem; border-radius: 12px; border: 1px solid #e2e8f0; font-weight: 600; color: #64748b; font-size: 0.9rem; display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-clock" style="color: #6366f1;"></i> {{ now()->format('d/m/Y H:i') }}
+        </div>
     </div>
 
     <!-- Hàng 1: Thống kê số lượng CLB và Thành viên -->
-    <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+    <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem;">
         <!-- Card CLB -->
         <div class="stat-card" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; padding: 1.5rem; border-radius: 1.5rem; box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4); position: relative; overflow: hidden;">
             <div style="position: absolute; right: -10px; top: -10px; opacity: 0.1; font-size: 8rem; font-weight: 900;"><i class="fas fa-users-cog"></i></div>
@@ -161,75 +166,7 @@
         </div>
     </div>
 
-    <!-- NEW SECTION: Quick Approval for Clubs -->
-    <div class="section-card" style="background: white; padding: 2rem; border-radius: 1.5rem; box-shadow: 0 15px 30px -10px rgba(0,0,0,0.1); margin-top: 2rem; border: 1px solid #e0e7ff;">
-        <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-            <h3 style="font-weight: 800; color: #1e293b; margin: 0; display: flex; align-items: center; gap: 0.75rem;">
-                <i class="fas fa-clipboard-check" style="color: #6366f1;"></i>
-                📋 YÊU CẦU LẬP CLB MỚI (DUYỆT NHANH)
-            </h3>
-            <a href="{{ route('admin.clubs.index') }}" style="color: #6366f1; font-weight: 700; text-decoration: none; font-size: 0.9rem; border-bottom: 2px solid transparent; transition: 0.2s;" onmouseover="this.style.borderBottomColor='#6366f1'">Xem tất cả &gt;</a>
-        </div>
-        
-        <div style="overflow-x: auto;">
-            <table style="width: 100%; border-collapse: separate; border-spacing: 0 0.75rem;">
-                <thead>
-                    <tr style="text-align: left;">
-                        <th style="padding: 1rem; color: #64748b; font-weight: 600; border-bottom: 2px solid #f1f5f9;">Tên Câu lạc bộ</th>
-                        <th style="padding: 1rem; color: #64748b; font-weight: 600; border-bottom: 2px solid #f1f5f9;">Người gửi (Leader)</th>
-                        <th style="padding: 1rem; color: #64748b; font-weight: 600; border-bottom: 2px solid #f1f5f9;">Ngày gửi</th>
-                        <th style="padding: 1rem; color: #64748b; font-weight: 600; border-bottom: 2px solid #f1f5f9; text-align: right;">Hành động</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($pendingClubList as $pClub)
-                        <tr style="background: #ffffff; border-radius: 1rem; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.01)'" onmouseout="this.style.transform='scale(1)'">
-                            <td style="padding: 1.25rem; border-bottom: 1px solid #f8fafc;">
-                                <div style="display: flex; align-items: center; gap: 1rem;">
-                                    @if($pClub->image)
-                                        <img src="{{ asset('storage/' . $pClub->image) }}" style="width: 45px; height: 45px; object-fit: cover; border-radius: 0.75rem;">
-                                    @else
-                                        <div style="width: 45px; height: 45px; background: #e0e7ff; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; color: #6366f1;"><i class="fas fa-image"></i></div>
-                                    @endif
-                                    <strong>{{ $pClub->name }}</strong>
-                                </div>
-                            </td>
-                            <td style="padding: 1.25rem; border-bottom: 1px solid #f8fafc; color: #475569;">
-                                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                    <div style="width: 32px; height: 32px; border-radius: 50%; background: #f1f5f9; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; color: #6366f1;">
-                                        {{ Str::upper(Str::substr($pClub->leader->name ?? 'A', 0, 1)) }}
-                                    </div>
-                                    {{ $pClub->leader->name ?? 'N/A' }}
-                                </div>
-                            </td>
-                            <td style="padding: 1.25rem; border-bottom: 1px solid #f8fafc; color: #64748b;">
-                                {{ $pClub->created_at->format('d/m/Y') }}
-                            </td>
-                            <td style="padding: 1.25rem; border-bottom: 1px solid #f8fafc; text-align: right;">
-                                <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
-                                    <form action="{{ route('admin.clubs.approve', $pClub->id) }}" method="POST" style="margin:0;">
-                                        @csrf
-                                        <button type="submit" style="background: #22c55e; color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 0.75rem; font-weight: 700; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#16a34a'">Duyệt ngay</button>
-                                    </form>
-                                    <form action="{{ route('admin.clubs.reject', $pClub->id) }}" method="POST" style="margin:0;">
-                                        @csrf
-                                        <button type="submit" style="background: #f1f5f9; color: #64748b; border: none; padding: 0.6rem 1.2rem; border-radius: 0.75rem; font-weight: 700; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#e2e8f0'">Từ chối</button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="4" style="padding: 3rem; text-align: center; color: #94a3b8; font-style: italic;">
-                                <i class="fas fa-check-circle" style="font-size: 2rem; margin-bottom: 1rem; color: #22c55e; display: block; opacity: 0.3;"></i>
-                                Hiện tại không có yêu cầu thành lập CLB mới nào cần phê duyệt.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
+
 
     <style>
         @keyframes pulse {

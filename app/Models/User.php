@@ -32,7 +32,7 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-     public function clubMembers()
+    public function clubMembers()
     {
         return $this->hasMany(\App\Models\ClubMember::class);
     }

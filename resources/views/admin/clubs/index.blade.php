@@ -121,38 +121,123 @@
         </form>
     </div>
 
-    <!-- Table Section -->
-    <div class="section-card" style="background: white; border-radius: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); padding: 1.5rem; border: 1px solid #f1f5f9;">
-        <h3 style="font-weight: 700; color: #334155; margin-bottom: 1.5rem;">📋 Danh sách Câu lạc bộ</h3>
+    <!-- Section 1: Pending/Rejected Requests -->
+    <div class="section-card" style="background: white; border-radius: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); padding: 1.5rem; border: 1px solid #f97316; margin-bottom: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 style="font-weight: 700; color: #ea580c; margin: 0;">⏳ Yêu cầu chờ duyệt & Đã từ chối</h3>
+            
+            <form action="{{ route('admin.clubs.index') }}" method="GET" style="display: flex; gap: 0.5rem; align-items: center; width: 300px;">
+                <div style="position: relative; flex: 1;">
+                    <input 
+                        type="text" 
+                        name="search" 
+                        value="{{ request('search') }}" 
+                        placeholder="Tìm tên..." 
+                        style="width: 100%; padding: 0.5rem 1rem 0.5rem 2rem; border: 1.5px solid #e2e8f0; border-radius: 0.75rem; outline: none; font-size: 0.85rem;"
+                    >
+                    <span style="position: absolute; left: 0.7rem; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.8rem;">🔍</span>
+                </div>
+                @if(request('search'))
+                    <a href="{{ route('admin.clubs.index') }}" style="text-decoration: none; color: #64748b; font-size: 0.75rem; background: #f1f5f9; padding: 0.4rem 0.6rem; border-radius: 0.5rem;">X</a>
+                @endif
+            </form>
+        </div>
         
         <div style="overflow-x: auto;">
-            <table style="width: 100%; border-collapse: separate; border-spacing: 0 0.75rem;">
+            <table style="width: 100%; border-collapse: separate; border-spacing: 0 0.5rem;">
                 <thead>
-                    <tr style="background: #f8fafc;">
-                        <th style="padding: 1rem; text-align: left; color: #64748b; font-weight: 600; border-bottom: 2px solid #e2e8f0;">STT</th>
-                        <th style="padding: 1rem; text-align: left; color: #64748b; font-weight: 600; border-bottom: 2px solid #e2e8f0;">Ảnh</th>
-                        <th style="padding: 1rem; text-align: left; color: #64748b; font-weight: 600; border-bottom: 2px solid #e2e8f0;">Tên CLB</th>
-                        <th style="padding: 1rem; text-align: left; color: #64748b; font-weight: 600; border-bottom: 2px solid #e2e8f0;">Chủ nhiệm</th>
-                        <th style="padding: 1rem; text-align: center; color: #64748b; font-weight: 600; border-bottom: 2px solid #e2e8f0;">TV Tối đa</th>
-                        <th style="padding: 1rem; text-align: center; color: #64748b; font-weight: 600; border-bottom: 2px solid #e2e8f0;">Trạng thái</th>
-                        <th style="padding: 1rem; text-align: right; color: #64748b; font-weight: 600; border-bottom: 2px solid #e2e8f0;">Hành động</th>
+                    <tr style="background: #fff7ed;">
+                        <th style="padding: 1rem; text-align: left; color: #9a3412; font-weight: 600; border-bottom: 2px solid #ffedd5;">STT</th>
+                        <th style="padding: 1rem; text-align: left; color: #9a3412; font-weight: 600; border-bottom: 2px solid #ffedd5;">Ảnh</th>
+                        <th style="padding: 1rem; text-align: left; color: #9a3412; font-weight: 600; border-bottom: 2px solid #ffedd5;">Tên CLB</th>
+                        <th style="padding: 1rem; text-align: left; color: #9a3412; font-weight: 600; border-bottom: 2px solid #ffedd5;">Chủ nhiệm</th>
+                        <th style="padding: 1rem; text-align: center; color: #9a3412; font-weight: 600; border-bottom: 2px solid #ffedd5;">Trạng thái</th>
+                        <th style="padding: 1rem; text-align: right; color: #9a3412; font-weight: 600; border-bottom: 2px solid #ffedd5;">Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($clubs as $key => $club)
-                        <tr style="background: #fff; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#fff'">
-                            <td style="padding: 1rem; border-bottom: 1px solid #f1f5f9; color: #94a3b8;">{{ $key + 1 }}</td>
-                            <td style="padding: 1rem; border-bottom: 1px solid #f1f5f9;">
+                    @forelse($pendingClubs as $key => $club)
+                        <tr style="background: #fff; transition: background 0.2s;" onmouseover="this.style.background='#fffaf5'" onmouseout="this.style.background='#fff'">
+                            <td style="padding: 1rem; border-bottom: 1px solid #fff7ed; color: #94a3b8;">{{ $key + 1 }}</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #fff7ed;">
                                 @if($club->image)
-                                    <img src="{{ asset('storage/' . $club->image) }}" alt="Thumbnail" style="width: 45px; height: 45px; object-fit: cover; border-radius: 10px; border: 1px solid #eee;">
+                                    <img src="{{ asset('storage/' . $club->image) }}" alt="Thumbnail" style="width: 40px; height: 40px; object-fit: cover; border-radius: 8px;">
                                 @else
-                                    <div style="width: 45px; height: 45px; background: #f8fafc; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #cbd5e1; border: 1px dashed #e2e8f0;">
-                                        <i class="fas fa-image"></i>
-                                    </div>
+                                    <div style="width: 40px; height: 40px; background: #f8fafc; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #cbd5e1; border: 1px dashed #e2e8f0;"><i class="fas fa-image"></i></div>
                                 @endif
                             </td>
-                            <td style="padding: 1rem; border-bottom: 1px solid #f1f5f9; font-weight: 700; color: #1e293b;">{{ $club->name }}</td>
-                            <td style="padding: 1rem; border-bottom: 1px solid #f1f5f9; color: #64748b;">
+                            <td style="padding: 1rem; border-bottom: 1px solid #fff7ed; font-weight: 700; color: #1e293b;">{{ $club->name }}</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #fff7ed; color: #64748b;">
+                                {{ $club->leader->name ?? 'N/A' }}
+                            </td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #fff7ed; text-align: center;">
+                                @if($club->status == 'pending')
+                                    <span style="background: #fef9c3; color: #854d0e; padding: 0.2rem 0.6rem; border-radius: 2rem; font-size: 0.7rem; font-weight: 700;">⏳ ĐANG CHỜ</span>
+                                @else
+                                    <span style="background: #fee2e2; color: #991b1b; padding: 0.2rem 0.6rem; border-radius: 2rem; font-size: 0.7rem; font-weight: 700;">❌ TỪ CHỐI</span>
+                                @endif
+                            </td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #fff7ed; text-align: right;">
+                                <div style="display: flex; gap: 0.4rem; justify-content: flex-end;">
+                                    @if($club->status == 'pending')
+                                        <form action="{{ route('admin.clubs.approve', $club->id) }}" method="POST" style="margin:0;">
+                                            @csrf
+                                            <button type="submit" style="padding: 0.4rem 0.8rem; background: #22c55e; color: white; border: none; border-radius: 0.5rem; font-size: 0.8rem; cursor: pointer;">Duyệt</button>
+                                        </form>
+                                        <form action="{{ route('admin.clubs.reject', $club->id) }}" method="POST" style="margin:0;">
+                                            @csrf
+                                            <button type="submit" style="padding: 0.4rem 0.8rem; background: #fbbf24; color: white; border: none; border-radius: 0.5rem; font-size: 0.8rem; cursor: pointer;">Từ chối</button>
+                                        </form>
+                                    @endif
+                                    <a href="{{ route('admin.clubs.edit', $club->id) }}" style="padding: 0.4rem 0.8rem; background: #6366f1; color: white; border-radius: 0.5rem; text-decoration: none; font-size: 0.8rem;">Sửa</a>
+                                    <form action="{{ route('admin.clubs.delete', $club->id) }}" method="POST" style="margin:0;" onsubmit="return confirm('Xác nhận xóa?')">
+                                        @csrf
+                                        <button type="submit" style="padding: 0.4rem 0.8rem; background: #ef4444; color: white; border: none; border-radius: 0.5rem; font-size: 0.8rem; cursor: pointer;">Xóa</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" style="padding: 2rem; text-align: center; color: #94a3b8; font-style: italic;">Không có yêu cầu nào cần xử lý.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Section 2: Active Clubs -->
+    <div class="section-card" style="background: white; border-radius: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); padding: 1.5rem; border: 1px solid #10b981;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 style="font-weight: 700; color: #059669; margin: 0;">✅ Câu lạc bộ chính thức (Đang hoạt động)</h3>
+        </div>
+        
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: separate; border-spacing: 0 0.5rem;">
+                <thead>
+                    <tr style="background: #f0fdf4;">
+                        <th style="padding: 1rem; text-align: left; color: #166534; font-weight: 600; border-bottom: 2px solid #dcfce7;">STT</th>
+                        <th style="padding: 1rem; text-align: left; color: #166534; font-weight: 600; border-bottom: 2px solid #dcfce7;">Ảnh</th>
+                        <th style="padding: 1rem; text-align: left; color: #166534; font-weight: 600; border-bottom: 2px solid #dcfce7;">Tên CLB</th>
+                        <th style="padding: 1rem; text-align: left; color: #166534; font-weight: 600; border-bottom: 2px solid #dcfce7;">Chủ nhiệm</th>
+                        <th style="padding: 1rem; text-align: center; color: #166534; font-weight: 600; border-bottom: 2px solid #dcfce7;">TV Tối đa</th>
+                        <th style="padding: 1rem; text-align: right; color: #166534; font-weight: 600; border-bottom: 2px solid #dcfce7;">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($activeClubs as $key => $club)
+                        <tr style="background: #fff; transition: background 0.2s;" onmouseover="this.style.background='#f0fdf4'" onmouseout="this.style.background='#fff'">
+                            <td style="padding: 1rem; border-bottom: 1px solid #f0fdf4; color: #94a3b8;">{{ $key + 1 }}</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #f0fdf4;">
+                                @if($club->image)
+                                    <img src="{{ asset('storage/' . $club->image) }}" alt="Thumbnail" style="width: 45px; height: 45px; object-fit: cover; border-radius: 10px;">
+                                @else
+                                    <div style="width: 45px; height: 45px; background: #f8fafc; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #cbd5e1; border: 1px dashed #e2e8f0;"><i class="fas fa-image"></i></div>
+                                @endif
+                            </td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #f0fdf4; font-weight: 700; color: #1e293b;">{{ $club->name }}</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #f0fdf4; color: #64748b;">
                                 <div style="display:flex; align-items:center; gap: 0.5rem;">
                                     <div style="width: 32px; height: 32px; border-radius: 50%; background: #e0e7ff; color: #6366f1; display:flex; align-items:center; justify-content:center; font-size: 0.8rem; font-weight: 700;">
                                         {{ Str::upper(Str::substr($club->leader->name ?? 'A', 0, 1)) }}
@@ -160,45 +245,20 @@
                                     {{ $club->leader->name ?? 'Admin' }}
                                 </div>
                             </td>
-                            <td style="padding: 1rem; border-bottom: 1px solid #f1f5f9; text-align: center; font-weight: 600; color: #334155;">{{ $club->max_members }}</td>
-                            <td style="padding: 1rem; border-bottom: 1px solid #f1f5f9; text-align: center;">
-                                @if($club->status == 'approved')
-                                    <span style="background: #dcfce7; color: #166534; padding: 0.3rem 0.75rem; border-radius: 2rem; font-size: 0.75rem; font-weight: 700;">✅ HOẠT ĐỘNG</span>
-                                @elseif($club->status == 'pending')
-                                    <span style="background: #fef9c3; color: #854d0e; padding: 0.3rem 0.75rem; border-radius: 2rem; font-size: 0.75rem; font-weight: 700;">⏳ ĐANG CHỜ</span>
-                                @else
-                                    <span style="background: #fee2e2; color: #991b1b; padding: 0.3rem 0.75rem; border-radius: 2rem; font-size: 0.75rem; font-weight: 700;">❌ TỪ CHỐI</span>
-                                @endif
-                            </td>
-                            <td style="padding: 1rem; border-bottom: 1px solid #f1f5f9; text-align: right;">
-                                <div style="display: flex; gap: 0.5rem; justify-content: flex-end; align-items: center;">
-                                    
-                                    @if($club->status == 'pending')
-                                        <form action="{{ route('admin.clubs.approve', $club->id) }}" method="POST" style="margin:0;">
-                                            @csrf
-                                            <button type="submit" title="Duyệt CLB" style="padding: 0.5rem; background: #22c55e; color: white; border: none; border-radius: 0.5rem; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='#16a34a'">Duyệt</button>
-                                        </form>
-                                        <form action="{{ route('admin.clubs.reject', $club->id) }}" method="POST" style="margin:0;">
-                                            @csrf
-                                            <button type="submit" title="Từ chối" style="padding: 0.5rem; background: #fbbf24; color: white; border: none; border-radius: 0.5rem; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='#f59e0b'">Từ chối</button>
-                                        </form>
-                                    @endif
-
-                                    <a href="{{ route('admin.clubs.edit', $club->id) }}" style="padding: 0.5rem; background: #6366f1; color: white; border-radius: 0.5rem; text-decoration: none; font-size: 0.9rem;" title="Sửa thông tin">Sửa</a>
-                                    
-                                    <form action="{{ route('admin.clubs.delete', $club->id) }}" method="POST" style="margin:0;" onsubmit="return confirm('Xác nhận xóa hoàn toàn CLB này?')">
+                            <td style="padding: 1rem; border-bottom: 1px solid #f0fdf4; text-align: center; font-weight: 600;">{{ $club->max_members }}</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #f0fdf4; text-align: right;">
+                                <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+                                    <a href="{{ route('admin.clubs.edit', $club->id) }}" style="padding: 0.5rem 1rem; background: #6366f1; color: white; border-radius: 0.6rem; text-decoration: none; font-size: 0.85rem;">Sửa</a>
+                                    <form action="{{ route('admin.clubs.delete', $club->id) }}" method="POST" style="margin:0;" onsubmit="return confirm('Xác nhận xóa hoàn toàn CLB?')">
                                         @csrf
-                                        <button type="submit" style="padding: 0.5rem; background: #ef4444; color: white; border: none; border-radius: 0.5rem; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='#dc2626'">Xóa</button>
+                                        <button type="submit" style="padding: 0.5rem 1rem; background: #ef4444; color: white; border: none; border-radius: 0.6rem; font-size: 0.85rem; cursor: pointer;">Xóa</button>
                                     </form>
                                 </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" style="padding: 3rem; text-align: center; color: #94a3b8;">
-                                <div style="font-size: 2rem; margin-bottom: 1rem;">🔍</div>
-                                Không tìm thấy dữ liệu Câu lạc bộ nào.
-                            </td>
+                            <td colspan="6" style="padding: 3rem; text-align: center; color: #94a3b8;">Không tìm thấy câu lạc bộ chính thức nào.</td>
                         </tr>
                     @endforelse
                 </tbody>

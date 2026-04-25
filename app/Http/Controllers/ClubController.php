@@ -8,11 +8,20 @@ use Illuminate\Support\Facades\Storage;
 
 class ClubController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $clubs = Club::orderBy('id', 'desc')->get();
+        $query = Club::query();
+
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        // Tách thành 2 danh sách
+        $pendingClubs = (clone $query)->whereIn('status', ['pending', 'rejected'])->orderBy('id', 'desc')->get();
+        $activeClubs = (clone $query)->where('status', 'approved')->orderBy('id', 'desc')->get();
+
         $leaders = \App\Models\User::where('role', 'leader')->get();
-        return view('admin.clubs.index', compact('clubs', 'leaders'));
+        return view('admin.clubs.index', compact('pendingClubs', 'activeClubs', 'leaders'));
     }
 
     public function store(Request $request)
@@ -56,13 +65,21 @@ class ClubController extends Controller
         return redirect()->route('admin.clubs.index')->with('success', 'Thêm câu lạc bộ thành công');
     }
 
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
-        $clubs = Club::orderBy('id', 'desc')->get();
+        $query = Club::query();
+
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        $pendingClubs = (clone $query)->whereIn('status', ['pending', 'rejected'])->orderBy('id', 'desc')->get();
+        $activeClubs = (clone $query)->where('status', 'approved')->orderBy('id', 'desc')->get();
+
         $editClub = Club::findOrFail($id);
         $leaders = \App\Models\User::where('role', 'leader')->get();
 
-        return view('admin.clubs.index', compact('clubs', 'editClub', 'leaders'));
+        return view('admin.clubs.index', compact('pendingClubs', 'activeClubs', 'editClub', 'leaders'));
     }
 
     public function update(Request $request, $id)

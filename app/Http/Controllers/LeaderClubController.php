@@ -12,7 +12,7 @@ class LeaderClubController extends Controller
     {
         // Lấy tất cả CLB mà user quản lý
         $allClubs = Club::where('user_id', Auth::id())->where('status', 'approved')->get();
-        
+
         if ($allClubs->isEmpty()) {
             return redirect()->route('leader.home')->with('error', 'Bạn chưa quản lý câu lạc bộ nào hoặc CLB chưa được duyệt.');
         }
@@ -20,7 +20,7 @@ class LeaderClubController extends Controller
         // Ưu tiên chọn club_id từ request. Nếu trống = "Tất cả"
         $clubId = $request->input('club_id');
         $isAll = empty($clubId);
-        
+
         if ($isAll) {
             $club = null; // Đại diện cho "Tất cả"
             $clubIds = $allClubs->pluck('id');
@@ -45,7 +45,7 @@ class LeaderClubController extends Controller
             ->where('status', 'approved');
 
         if ($search) {
-            $membersQuery->whereHas('user', function($q) use ($search) {
+            $membersQuery->whereHas('user', function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%");
             });
         }
@@ -68,7 +68,7 @@ class LeaderClubController extends Controller
     public function eventsIndex(Request $request)
     {
         $allClubs = Club::where('user_id', Auth::id())->where('status', 'approved')->get();
-        
+
         if ($allClubs->isEmpty()) {
             return redirect()->route('leader.home')->with('error', 'Bạn chưa quản lý câu lạc bộ nào.');
         }
@@ -98,15 +98,22 @@ class LeaderClubController extends Controller
 
     public function infoIndex(Request $request)
     {
-        $allClubs = Club::where('user_id', Auth::id())->get(); // Lấy tất cả, kể cả pending để leader có thể xem/sửa
-        
+        $query = Club::where('user_id', Auth::id())->where('status', 'approved');
+
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        $allClubs = $query->get();
+
         if ($allClubs->isEmpty()) {
-            // Nếu chưa có CLB nào, vẫn cho vào trang quản lý để "Tạo mới"
+            // Nếu tìm kiếm không ra hoặc chưa có CLB nào
             $club = null;
         } else {
             $clubId = $request->input('club_id');
             $club = $clubId ? $allClubs->where('id', $clubId)->first() : $allClubs->first();
-            if (!$club) $club = $allClubs->first();
+            if (!$club)
+                $club = $allClubs->first();
         }
 
         return view('leader.clubs.info', compact('club', 'allClubs'));
@@ -181,7 +188,7 @@ class LeaderClubController extends Controller
     public function manage(Request $request, $id)
     {
         $club = Club::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
-        
+
         $search = $request->input('search');
         $department = $request->input('department');
 
@@ -191,7 +198,7 @@ class LeaderClubController extends Controller
             ->where('status', 'approved');
 
         if ($search) {
-            $membersQuery->whereHas('user', function($q) use ($search) {
+            $membersQuery->whereHas('user', function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%");
             });
         }
@@ -228,7 +235,7 @@ class LeaderClubController extends Controller
         $currentCount = \App\Models\ClubMember::where('club_id', $club->id)
             ->where('status', 'approved')
             ->count();
-        
+
         if ($currentCount >= $club->max_members) {
             return back()->with('error', 'Câu lạc bộ đã đạt giới hạn thành viên tối đa.');
         }
@@ -302,7 +309,7 @@ class LeaderClubController extends Controller
             $dbStatus = 'finished';
         }
 
-        \App\Models\Event::create([
+        $event = \App\Models\Event::create([
             'club_id' => $club->id,
             'title' => $request->title,
             'description' => $request->description,
@@ -312,6 +319,15 @@ class LeaderClubController extends Controller
             'status' => $dbStatus,
             'image' => $imagePath,
         ]);
+
+        // Gửi thông báo cho tất cả thành viên được duyệt của CLB
+        $members = \App\Models\ClubMember::with('user')
+            ->where('club_id', $club->id)
+            ->where('status', 'approved')
+            ->get()
+            ->pluck('user');
+
+        \Illuminate\Support\Facades\Notification::send($members, new \App\Notifications\EventCreatedNotification($event, $club));
 
         return back()->with('success', 'Đã tạo sự kiện mới thành công.');
     }
@@ -379,7 +395,7 @@ class LeaderClubController extends Controller
     public function eventParticipants($id)
     {
         $event = \App\Models\Event::with('club')->findOrFail($id);
-        
+
         // Kiểm tra xem Leader có quản lý CLB của sự kiện này không
         $club = Club::where('id', $event->club_id)->where('user_id', Auth::id())->first();
         if (!$club) {
@@ -387,9 +403,11 @@ class LeaderClubController extends Controller
         }
 
         // Lấy danh sách đăng ký kèm thông tin user và thông tin ClubMember (để lấy MSSV, Khoa...)
-        $participants = \App\Models\Registration::with(['user.clubMembers' => function($query) use ($event) {
+        $participants = \App\Models\Registration::with([
+            'user.clubMembers' => function ($query) use ($event) {
                 $query->where('club_id', $event->club_id);
-            }])
+            }
+        ])
             ->where('event_id', $id)
             ->where('status', 'approved')
             ->get();

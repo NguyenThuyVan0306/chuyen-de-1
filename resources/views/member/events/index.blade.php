@@ -86,4 +86,9 @@
             </div>
         @endforelse
     </div>
+
+    <!-- Pagination Links -->
+    <div style="margin-top: 3rem; display: flex; justify-content: center;">
+        {{ $events->links() }}
+    </div>
 @endsection

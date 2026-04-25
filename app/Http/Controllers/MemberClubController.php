@@ -8,20 +8,6 @@ use Illuminate\Support\Facades\Auth;
 
 class MemberClubController extends Controller
 {
-    // public function index()
-    // {
-    //     $clubs = Club::orderBy('id', 'desc')->get();
-    //     return view('member.clubs.index', compact('clubs'));
-    // }
-
-    // public function index()
-    //     {
-    //         $clubs = \App\Models\Club::with(['clubMembers' => function ($query) {
-    //             $query->where('user_id', Auth::id());
-    //         }])->orderBy('id', 'desc')->get();
-
-    //         return view('member.clubs.index', compact('clubs'));
-    //     }
 
     public function index()
     {
@@ -40,7 +26,7 @@ class MemberClubController extends Controller
                 ->where('status', 'approved');
         })
         ->orderBy('id', 'desc')
-        ->get();
+        ->paginate(6);
 
         return view('member.clubs.index', compact('clubs'));
     }
@@ -57,7 +43,7 @@ class MemberClubController extends Controller
             }
         ])
         ->orderBy('id', 'desc')
-        ->get();
+        ->paginate(6);
 
         return view('member.myclubs.index', compact('clubs'));
     }

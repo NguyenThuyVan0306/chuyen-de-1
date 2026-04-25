@@ -18,12 +18,26 @@ class LeaderHomeController extends Controller
             ->where('status', 'approved')
             ->count();
 
-        $totalEvents = Event::whereIn('club_id', $clubIds)->count();
+        $eventsQuery = Event::whereIn('club_id', $clubIds);
+        $totalEvents = $eventsQuery->count();
+
+        $now = \Carbon\Carbon::now();
+        $upcomingEventsCount = Event::whereIn('club_id', $clubIds)->where('start_time', '>', $now)->count();
+        $ongoingEventsCount = Event::whereIn('club_id', $clubIds)->where('start_time', '<=', $now)->where('end_time', '>=', $now)->count();
+        $finishedEventsCount = Event::whereIn('club_id', $clubIds)->where('end_time', '<', $now)->count();
 
         $pendingMembers = \App\Models\ClubMember::whereIn('club_id', $clubIds)
             ->where('status', 'pending')
             ->count();
 
-        return view('leader.dashboard', compact('myManagedClubs', 'totalMembers', 'totalEvents', 'pendingMembers'));
+        return view('leader.dashboard', compact(
+            'myManagedClubs', 
+            'totalMembers', 
+            'totalEvents', 
+            'upcomingEventsCount',
+            'ongoingEventsCount',
+            'finishedEventsCount',
+            'pendingMembers'
+        ));
     }
 }

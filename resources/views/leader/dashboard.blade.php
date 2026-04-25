@@ -13,7 +13,21 @@
         <a href="{{ route('leader.events.index') }}" class="stat-card card-blue" style="text-decoration: none; display: block;">
             <h4>Sự kiện</h4>
             <div class="stat-number">{{ $totalEvents ?? 0 }}</div>
-            <p>Sự kiện đã tạo</p>
+            <p style="margin-bottom: 10px;">Tổng số sự kiện</p>
+            <div style="display: flex; justify-content: space-between; font-size: 0.75rem; background: rgba(255,255,255,0.2); padding: 8px; border-radius: 8px;">
+                <div style="text-align: center;">
+                    <div style="font-weight: 800;">{{ $upcomingEventsCount ?? 0 }}</div>
+                    <div>Sắp tới</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-weight: 800;">{{ $ongoingEventsCount ?? 0 }}</div>
+                    <div>Đang diễn ra</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-weight: 800;">{{ $finishedEventsCount ?? 0 }}</div>
+                    <div>Kết thúc</div>
+                </div>
+            </div>
         </a>
 
         <a href="{{ route('leader.members.index') }}" class="stat-card card-green" style="text-decoration: none; display: block;">
@@ -65,9 +79,15 @@
                             @endif
                         </td>
                         <td style="padding: 15px; text-align: right; border-radius: 0 10px 10px 0;">
-                            <a href="{{ route('leader.clubs.info', ['club_id' => $club->id]) }}" style="text-decoration: none; background: #8d5cf6; color: white; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; transition: 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
-                                Quản lý
-                            </a>
+                            @if($club->status == 'approved')
+                                <a href="{{ route('leader.clubs.info', ['club_id' => $club->id]) }}" style="text-decoration: none; background: #8d5cf6; color: white; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; transition: 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                                    Quản lý
+                                </a>
+                            @elseif($club->status == 'pending')
+                                <span style="font-size: 0.8rem; color: #a16207; font-style: italic;">Chờ phê duyệt</span>
+                            @else
+                                <span style="font-size: 0.8rem; color: #94a3b8; font-style: italic;">Không khả dụng</span>
+                            @endif
                         </td>
                     </tr>
                 @empty

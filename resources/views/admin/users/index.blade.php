@@ -104,7 +104,30 @@
 
     <!-- Table Section -->
     <div class="section-card" style="background: white; border-radius: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); padding: 1.5rem; border: 1px solid #f1f5f9;">
-        <h3 style="font-weight: 700; color: #334155; margin-bottom: 1.5rem;">👥 Danh sách Người dùng</h3>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 style="font-weight: 700; color: #334155; margin: 0;">👥 Danh sách Người dùng</h3>
+            
+            <form action="{{ route('admin.users.index') }}" method="GET" style="display: flex; gap: 0.5rem; align-items: center; width: 400px;">
+                <div style="position: relative; flex: 1;">
+                    <input 
+                        type="text" 
+                        name="search" 
+                        value="{{ request('search') }}" 
+                        placeholder="Tìm tên hoặc email..." 
+                        style="width: 100%; padding: 0.6rem 1rem 0.6rem 2.5rem; border: 1.5px solid #e2e8f0; border-radius: 0.75rem; outline: none; font-size: 0.9rem; transition: all 0.2s;"
+                        onfocus="this.style.borderColor='#ec4899'; this.style.boxShadow='0 0 0 3px rgba(236, 72, 153, 0.1)'"
+                        onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'"
+                    >
+                    <span style="position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.9rem;">🔍</span>
+                </div>
+                <button type="submit" style="background: #1e293b; color: white; padding: 0.6rem 1.25rem; border-radius: 0.75rem; border: none; font-weight: 600; cursor: pointer; font-size: 0.9rem; transition: background 0.2s;" onmouseover="this.style.background='#0f172a'" onmouseout="this.style.background='#1e293b'">
+                    Tìm
+                </button>
+                @if(request('search'))
+                    <a href="{{ route('admin.users.index') }}" style="text-decoration: none; color: #64748b; font-size: 0.85rem; font-weight: 600; white-space: nowrap; padding: 0.5rem 0.75rem; border-radius: 0.5rem; background: #f1f5f9;" onmouseover="this.style.background='#e2e8f0'" onmouseout="this.style.background='#f1f5f9'">Xóa lọc</a>
+                @endif
+            </form>
+        </div>
         
         <div style="overflow-x: auto;">
             <table style="width: 100%; border-collapse: separate; border-spacing: 0 0.75rem;">

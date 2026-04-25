@@ -136,3 +136,73 @@ body {
     border-radius: 8px;
     margin-bottom: 12px;
 }
+
+/* ===== PAGINATION ===== */
+.pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    gap: 8px;
+    align-items: center;
+}
+
+.pagination li {
+    display: inline-block;
+}
+
+.pagination li a, 
+.pagination li span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 14px;
+    border-radius: 12px;
+    background: white;
+    color: #64748b;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.95rem;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.pagination li a:hover {
+    border-color: #8d5cf6;
+    color: #8d5cf6;
+    background: #fdfaff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(141, 92, 246, 0.15);
+}
+
+.pagination li.active span {
+    background: #8d5cf6;
+    color: white;
+    border-color: #8d5cf6;
+    box-shadow: 0 4px 12px rgba(141, 92, 246, 0.3);
+}
+
+.pagination li.disabled span {
+    background: #f8fafc;
+    color: #94a3b8;
+    border-color: #f1f5f9;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* For small pagination (Tailwind default links) */
+nav[role="navigation"] svg {
+    width: 20px;
+}
+
+nav[role="navigation"] .flex.justify-between.flex-1 {
+    display: none; /* Hide the 'Showing X to Y' part on mobile if using default tailwind */
+}
+
+@media (min-width: 768px) {
+    nav[role="navigation"] .flex.justify-between.flex-1 {
+        display: flex;
+    }
+}

@@ -12,6 +12,37 @@
         </button>
     </div>
 
+    <!-- SEARCH SECTION -->
+    <div style="margin-bottom: 2rem; background: white; padding: 1.25rem; border-radius: 1rem; border: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between; gap: 2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+        <div style="flex: 1;">
+            <form action="{{ route('leader.clubs.info') }}" method="GET" style="display: flex; gap: 0.5rem; max-width: 500px;">
+                <div style="position: relative; flex: 1;">
+                    <input 
+                        type="text" 
+                        name="search" 
+                        value="{{ request('search') }}" 
+                        placeholder="Tìm nhanh Câu lạc bộ..." 
+                        style="width: 100%; padding: 0.65rem 1rem 0.65rem 2.5rem; border: 1.5px solid #e2e8f0; border-radius: 0.75rem; outline: none; font-size: 0.95rem; transition: all 0.2s;"
+                        onfocus="this.style.borderColor='#8d5cf6'; this.style.boxShadow='0 0 0 3px rgba(141, 92, 246, 0.1)'"
+                        onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'"
+                    >
+                    <span style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.9rem;">
+                        <i class="fas fa-search"></i>
+                    </span>
+                </div>
+                <button type="submit" style="background: #8d5cf6; color: white; padding: 0 1.5rem; border-radius: 0.75rem; border: none; font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 6px -1px rgba(141, 92, 246, 0.2);" onmouseover="this.style.background='#7c3aed'; this.style.transform='translateY(-1px)'" onmouseout="this.style.background='#8d5cf6'; this.style.transform='translateY(0)'">
+                    Tìm kiếm
+                </button>
+                @if(request('search'))
+                    <a href="{{ route('leader.clubs.info') }}" style="text-decoration: none; color: #64748b; background: #f1f5f9; padding: 0.65rem 1rem; border-radius: 0.75rem; font-weight: 600; font-size: 0.9rem; display: flex; align-items: center;">Xóa lọc</a>
+                @endif
+            </form>
+        </div>
+        <div style="color: #64748b; font-size: 0.9rem; font-weight: 600; background: #f8fafc; padding: 0.5rem 1rem; border-radius: 0.5rem;">
+            📦 {{ $allClubs->count() }} CLB
+        </div>
+    </div>
+
     <!-- CLUB GRID -->
     <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 2rem;">
         @forelse($allClubs as $c)
@@ -104,12 +135,12 @@
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                         <div>
                             <label style="display: block; font-weight: 600; color: #475569; margin-bottom: 0.3rem;">Email liên hệ</label>
-                            <input type="email" name="contact_email" value="{{ old('contact_email') }}" required style="width: 100%; padding: 0.7rem; border: 1.5px solid #e2e8f0; border-radius: 0.5rem @error('contact_email') ; border-color: #ef4444 @enderror">
+                            <input type="email" name="contact_email" value="{{ old('contact_email') }}" required style="width: 100%; padding: 0.7rem; border: 1.5px solid #e2e8f0; border-radius: 0.5rem; box-sizing: border-box; @error('contact_email') border-color: #ef4444; @enderror">
                             @error('contact_email') <span style="color: #ef4444; font-size: 0.75rem;">{{ $message }}</span> @enderror
                         </div>
                         <div>
                             <label style="display: block; font-weight: 600; color: #475569; margin-bottom: 0.3rem;">Số điện thoại</label>
-                            <input type="text" name="contact_phone" value="{{ old('contact_phone') }}" required style="width: 100%; padding: 0.7rem; border: 1.5px solid #e2e8f0; border-radius: 0.5rem @error('contact_phone') ; border-color: #ef4444 @enderror">
+                            <input type="text" name="contact_phone" value="{{ old('contact_phone') }}" required style="width: 100%; padding: 0.7rem; border: 1.5px solid #e2e8f0; border-radius: 0.5rem; box-sizing: border-box; @error('contact_phone') border-color: #ef4444; @enderror">
                             @error('contact_phone') <span style="color: #ef4444; font-size: 0.75rem;">{{ $message }}</span> @enderror
                         </div>
                     </div>
@@ -160,11 +191,11 @@
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                         <div>
                             <label style="display: block; font-weight: 600; color: #475569; margin-bottom: 0.3rem;">Email</label>
-                            <input type="email" name="contact_email" id="edit-email" required style="width: 100%; padding: 0.7rem; border: 1.5px solid #e2e8f0; border-radius: 0.5rem;">
+                            <input type="email" name="contact_email" id="edit-email" required style="width: 100%; padding: 0.7rem; border: 1.5px solid #e2e8f0; border-radius: 0.5rem; box-sizing: border-box;">
                         </div>
                         <div>
                             <label style="display: block; font-weight: 600; color: #475569; margin-bottom: 0.3rem;">SĐT</label>
-                            <input type="text" name="contact_phone" id="edit-phone" required style="width: 100%; padding: 0.7rem; border: 1.5px solid #e2e8f0; border-radius: 0.5rem;">
+                            <input type="text" name="contact_phone" id="edit-phone" required style="width: 100%; padding: 0.7rem; border: 1.5px solid #e2e8f0; border-radius: 0.5rem; box-sizing: border-box;">
                         </div>
                     </div>
                     <div>

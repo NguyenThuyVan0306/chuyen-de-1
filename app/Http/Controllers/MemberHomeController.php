@@ -24,7 +24,7 @@ class MemberHomeController extends Controller
         })->latest()->get();
 
         // 3. Sự kiện từ các CLB đã tham gia
-        $latestEvents = Event::with(['club', 'registrations' => function ($query) use ($userId) {
+        $eventsQuery = Event::with(['club', 'registrations' => function ($query) use ($userId) {
                 $query->where('user_id', $userId);
             }])
             ->whereHas('club', function ($query) use ($userId) {
@@ -32,18 +32,24 @@ class MemberHomeController extends Controller
                     $subQuery->where('user_id', $userId)
                              ->where('status', 'approved');
                 });
-            })
-            ->latest('start_time')
-            ->take(5)
-            ->get();
+            });
+
+        $latestEvents = (clone $eventsQuery)->latest('start_time')->take(3)->get();
+        $upcomingEventsCount = $eventsQuery->count();
 
         // 4. Các con số thống kê
         $joinedClubsCount = $myClubs->count();
+
+        $pendingClubRequestsCount = \App\Models\ClubMember::where('user_id', $userId)
+            ->where('status', 'pending')
+            ->count();
 
         $pendingRegistrationsCount = \App\Models\Registration::where('user_id', $userId)
             ->where('status', 'pending')
             ->count();
 
-        return view('member.home', compact('latestClubs', 'myClubs', 'latestEvents', 'joinedClubsCount', 'pendingRegistrationsCount'));
+        $totalPendingCount = $pendingClubRequestsCount + $pendingRegistrationsCount;
+
+        return view('member.home', compact('latestClubs', 'myClubs', 'latestEvents', 'joinedClubsCount', 'totalPendingCount', 'upcomingEventsCount'));
     }
 }

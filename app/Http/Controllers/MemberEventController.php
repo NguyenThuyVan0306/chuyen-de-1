@@ -9,17 +9,20 @@ class MemberEventController extends Controller
 {
     public function index()
     {
-        $events = Event::with(['club', 'registrations' => function ($query) {
+        $events = Event::with([
+            'club',
+            'registrations' => function ($query) {
                 $query->where('user_id', Auth::id());
-            }])
+            }
+        ])
             ->whereHas('club', function ($query) {
                 $query->whereHas('clubMembers', function ($subQuery) {
                     $subQuery->where('user_id', Auth::id())
-                             ->where('status', 'approved');
+                        ->where('status', 'approved');
                 });
             })
             ->orderBy('start_time', 'asc')
-            ->get();
+            ->paginate(6);
 
         return view('member.events.index', compact('events'));
     }
@@ -47,7 +50,16 @@ class MemberEventController extends Controller
             return back()->with('error', 'Bạn đã đăng ký tham gia sự kiện này rồi.');
         }
 
-        // Check capacity if needed (add max_participants check here later)
+        // Check if event has ended
+        if ($event->end_time->isPast()) {
+            return back()->with('error', 'Sự kiện này đã kết thúc, bạn không thể đăng ký tham gia.');
+        }
+
+        // Check capacity
+        $currentParticipants = \App\Models\Registration::where('event_id', $id)->count();
+        if ($event->max_participants > 0 && $currentParticipants >= $event->max_participants) {
+            return back()->with('error', 'Sự kiện này đã đủ số lượng người tham gia.');
+        }
 
         \App\Models\Registration::create([
             'user_id' => Auth::id(),
@@ -59,3 +71,4 @@ class MemberEventController extends Controller
         return back()->with('success', 'Bạn đã tham gia sự kiện thành công! Hãy chuẩn bị tinh thần sẵn sàng nhé.');
     }
 }
+

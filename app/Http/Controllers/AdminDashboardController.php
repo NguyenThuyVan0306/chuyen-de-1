@@ -26,20 +26,13 @@ class AdminDashboardController extends Controller
         $totalEvents = Event::count();
         $upcomingEvents = Event::where('start_time', '>', now())->count();
         
-        // 4. Các yêu cầu mới (Để duyệt nhanh trên Dashboard)
-        $pendingClubList = Club::with('leader')
-            ->where('status', 'pending')
-            ->latest()
-            ->limit(5)
-            ->get();
-        
         $pendingClubsCount = $pendingClubs;
 
         return view('admin.dashboard', compact(
             'totalClubs', 'approvedClubs', 'pendingClubs',
             'totalUsers', 'totalMembers', 'totalLeaders', 'activeClubMembers',
             'totalEvents', 'upcomingEvents',
-            'pendingClubsCount', 'pendingClubList'
+            'pendingClubsCount'
         ));
     }
 }

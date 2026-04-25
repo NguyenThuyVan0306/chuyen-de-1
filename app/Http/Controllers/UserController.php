@@ -8,9 +8,19 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::orderBy('id', 'desc')->get();
+        $query = User::query();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                    ->orWhere('email', 'like', "%$search%");
+            });
+        }
+
+        $users = $query->orderBy('id', 'desc')->get();
         return view('admin.users.index', compact('users'));
     }
 
@@ -44,9 +54,19 @@ class UserController extends Controller
         return redirect()->route('admin.users.index')->with('success', 'Thêm người dùng thành công');
     }
 
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
-        $users = User::orderBy('id', 'desc')->get();
+        $query = User::query();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                    ->orWhere('email', 'like', "%$search%");
+            });
+        }
+
+        $users = $query->orderBy('id', 'desc')->get();
         $editUser = User::findOrFail($id);
 
         return view('admin.users.index', compact('users', 'editUser'));

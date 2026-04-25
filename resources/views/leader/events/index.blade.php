@@ -115,6 +115,8 @@
         </div>
     </div>
 
+    <!-- Pagination hidden as requested -->
+
     <!-- MODAL: CREATE EVENT -->
     <div id="createEventModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
         <div style="background: white; width: 650px; border-radius: 1.5rem; padding: 2.5rem; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); position: relative; max-height: 90vh; overflow-y: auto;">

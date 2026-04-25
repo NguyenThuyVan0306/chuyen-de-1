@@ -18,10 +18,18 @@
             <a href="{{ route('member.clubs.index') }}" class="{{ request()->routeIs('member.clubs.index') ? 'active' : '' }}">Câu lạc bộ</a>
             <a href="{{ route('member.myclubs.index') }}" class="{{ request()->routeIs('member.myclubs.*') ? 'active' : '' }}">Câu lạc bộ của tôi</a>
             <a href="{{ route('member.events.index') }}" class="{{ request()->routeIs('member.events.*') ? 'active' : '' }}">Sự kiện</a>
-            <a href="#">Hồ sơ</a>
+            <a href="{{ route('member.profile.index') }}" class="{{ request()->routeIs('member.profile.*') ? 'active' : '' }}">Hồ sơ</a>
         </nav>
 
         <div class="member-right">
+            <a href="{{ route('member.notifications.index') }}" class="notification-icon" style="margin-right: 15px; position: relative; color: #555; text-decoration: none; font-size: 1.2rem;">
+                <i class="fas fa-bell"></i>
+                @if(Auth::user()->unreadNotifications->count() > 0)
+                    <span class="badge" style="position: absolute; top: -5px; right: -10px; background-color: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px; font-weight: bold;">
+                        {{ Auth::user()->unreadNotifications->count() }}
+                    </span>
+                @endif
+            </a>
             <div class="member-user">Xin chào, {{ Auth::user()->name }}</div>
 
             <form action="{{ route('logout') }}" method="POST" class="member-logout">

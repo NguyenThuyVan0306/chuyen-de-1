@@ -9,10 +9,9 @@ use App\Http\Controllers\MemberClubController;
 use App\Http\Controllers\AdminClubMemberController;
 use App\Http\Controllers\MemberEventController;
 use App\Http\Controllers\MemberHomeController;
+use App\Http\Controllers\MemberNotificationController;
 
-Route::get('/', function () {
-    return redirect('/login');
-});
+Route::get('/', [\App\Http\Controllers\LandingPageController::class, 'index'])->name('landing');
 
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
@@ -37,6 +36,13 @@ Route::middleware(['auth', 'check.status'])->group(function () {
     Route::get('/member/events', [MemberEventController::class, 'index'])->name('member.events.index');
     Route::post('/member/events/{id}/register', [MemberEventController::class, 'register'])->name('member.events.register');
 
+    Route::get('/member/notifications', [MemberNotificationController::class, 'index'])->name('member.notifications.index');
+    Route::post('/member/notifications/mark-all-read', [MemberNotificationController::class, 'markAllAsRead'])->name('member.notifications.markAllRead');
+    Route::get('/member/notifications/{id}/read', [MemberNotificationController::class, 'markAsRead'])->name('member.notifications.read');
+
+    Route::get('/member/profile', [\App\Http\Controllers\MemberProfileController::class, 'index'])->name('member.profile.index');
+    Route::post('/member/profile/update', [\App\Http\Controllers\MemberProfileController::class, 'update'])->name('member.profile.update');
+
     Route::middleware('check.leader')->group(function () {
         Route::get('/leader/dashboard', [\App\Http\Controllers\LeaderHomeController::class, 'index'])->name('leader.home');
         
@@ -58,6 +64,9 @@ Route::middleware(['auth', 'check.status'])->group(function () {
         Route::post('/leader/club-members/{id}/approve', [\App\Http\Controllers\LeaderClubController::class, 'approveMember'])->name('leader.club.members.approve');
         Route::post('/leader/club-members/{id}/reject', [\App\Http\Controllers\LeaderClubController::class, 'rejectMember'])->name('leader.club.members.reject');
         Route::post('/leader/club-members/{id}/remove', [\App\Http\Controllers\LeaderClubController::class, 'removeMember'])->name('leader.club.members.remove');
+        
+        Route::get('/leader/profile', [\App\Http\Controllers\LeaderProfileController::class, 'index'])->name('leader.profile.index');
+        Route::post('/leader/profile/update', [\App\Http\Controllers\LeaderProfileController::class, 'update'])->name('leader.profile.update');
     });
 
     Route::get('/admin/dashboard', [\App\Http\Controllers\AdminDashboardController::class, 'index'])
@@ -86,5 +95,9 @@ Route::middleware(['auth', 'check.status'])->group(function () {
         Route::post('/admin/clubs/{id}/reject', [ClubController::class, 'reject'])->name('admin.clubs.reject');
 
         Route::get('/admin/club-members', [AdminClubMemberController::class, 'index'])->name('admin.club.members');
+
+        // Admin Profile
+        Route::get('/admin/profile', [\App\Http\Controllers\AdminProfileController::class, 'index'])->name('admin.profile.index');
+        Route::post('/admin/profile/update', [\App\Http\Controllers\AdminProfileController::class, 'update'])->name('admin.profile.update');
     });
 });

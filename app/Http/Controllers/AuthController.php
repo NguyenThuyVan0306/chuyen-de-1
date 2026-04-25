@@ -12,8 +12,10 @@ class AuthController extends Controller
     public function showLoginForm()
     {
         if (Auth::check()) {
-            if (Auth::user()->role === 'admin') return redirect()->route('admin.dashboard');
-            if (Auth::user()->role === 'leader') return redirect()->route('leader.home');
+            if (Auth::user()->role === 'admin')
+                return redirect()->route('admin.dashboard');
+            if (Auth::user()->role === 'leader')
+                return redirect()->route('leader.home');
             return redirect()->route('member.home');
         }
         return view('auth.login');
@@ -24,13 +26,11 @@ class AuthController extends Controller
         $request->validate([
             'email' => 'required|email',
             'password' => 'required|min:6',
-            'role' => 'required|in:member,leader',
         ], [
             'email.required' => 'Vui lòng nhập email',
             'email.email' => 'Email không đúng định dạng',
             'password.required' => 'Vui lòng nhập mật khẩu',
             'password.min' => 'Mật khẩu phải có ít nhất 6 ký tự',
-            'role.required' => 'Thiếu thông tin vai trò',
         ]);
 
         if (Auth::attempt($request->only('email', 'password'))) {
@@ -40,14 +40,7 @@ class AuthController extends Controller
                 Auth::logout();
                 return back()->with('error', 'Vui lòng dùng cổng đăng nhập dành cho Quản trị viên');
             }
-            
-            // Strictly check if the actual role matches the requested role
-            if (Auth::user()->role !== $request->role) {
-                Auth::logout();
-                $roleName = $request->role == 'leader' ? 'Trưởng nhóm' : 'Thành viên';
-                return back()->with('error', 'Tài khoản không thuộc vai trò ' . $roleName);
-            }
-            
+
             if (Auth::user()->role === 'leader') {
                 return redirect()->route('leader.home')->with('success', 'Đăng nhập thành công với tư cách Trưởng nhóm');
             }
@@ -100,8 +93,10 @@ class AuthController extends Controller
     public function showRegisterForm()
     {
         if (Auth::check()) {
-            if (Auth::user()->role === 'admin') return redirect()->route('admin.dashboard');
-            if (Auth::user()->role === 'leader') return redirect()->route('leader.home');
+            if (Auth::user()->role === 'admin')
+                return redirect()->route('admin.dashboard');
+            if (Auth::user()->role === 'leader')
+                return redirect()->route('leader.home');
             return redirect()->route('member.home');
         }
         return view('auth.register');
@@ -138,10 +133,16 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
+        $isAdmin = Auth::check() && Auth::user()->role === 'admin';
+
         Auth::logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
+        if ($isAdmin) {
+            return redirect()->route('admin.login')->with('success', 'Đăng xuất thành công');
+        }
 
         return redirect()->route('login')->with('success', 'Đăng xuất thành công');
     }
